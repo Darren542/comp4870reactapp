@@ -1,6 +1,7 @@
 import React,{useState, useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import BASE_URL from '../data/config';
+import { data } from 'jquery';
 
 const AddStudentForm =(param)=>{
     const navigate = useNavigate(); 
@@ -9,7 +10,8 @@ const AddStudentForm =(param)=>{
     const [school, setSchool] = useState('');
     // console.log("param", param)
     // console.log("paramS", param.student.firstName)
-    const addStudent =()=>{
+    const addStudent =(e)=>{
+      e.preventDefault();
       if (!param.isEdit) {
         const result = fetch(`${BASE_URL.BASE_API_URL}students/`,{
             method:'post',
@@ -22,8 +24,13 @@ const AddStudentForm =(param)=>{
         });
         result
           .then(response => response.json())
-          .then( navigate('/list', { replace: true }))
+          .then((data) => {
+            console.log(data);
+            navigate('/list');
+          } )
           .catch(error => console.error('Error:', error));
+
+        // navigate('/list')
       }
       else {
         const result = fetch(`${BASE_URL.BASE_API_URL}students/${param.id}`,{
@@ -37,9 +44,19 @@ const AddStudentForm =(param)=>{
             headers:{'Content-Type':'application/json'}
         });
         result
-          .then(response => response.json())
-          .then( navigate('/list', { replace: true }))
+        .then(response => {
+          if (response.status === 204) {
+            return;
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log(data);
+          navigate('/list');
+        })
           .catch(error => console.error('Error:', error));
+
+        // navigate('/list')
     }
   }
   
@@ -49,9 +66,20 @@ const AddStudentForm =(param)=>{
         headers:{'Content-Type':'application/json'}
     });
     result
-      .then(response => response.json())
-      .then( navigate('/list', { replace: true }))
+    .then(response => {
+      console.log(response)
+      if (response.status === 204) {
+        return;
+      }
+      return response.json();
+    })
+      .then((data) => {
+        console.log(data);
+        navigate('/list');
+      })
       .catch(error => console.error('Error:', error));
+
+    // navigate('/list')
   }
 
   useEffect(() => {
@@ -84,9 +112,9 @@ const AddStudentForm =(param)=>{
             value={school} onChange={(event) => setSchool(event.target.value)} />
         </div>
 
-        <input type="submit" onClick={() => addStudent()} className="btn btn-success" value={param.isEdit ? "Edit" : "Add"} />
+        <input type="submit" onClick={(e) => addStudent(e)} className="btn btn-success" value={param.isEdit ? "Edit" : "Add"} />
       </form>
-      {param.isEdit ? <input type="submit" onClick={() => deleteStudent()} className="btn btn-danger" value="Delete" /> : null}
+      {param.isEdit ? <input type="button" onClick={() => deleteStudent()} className="btn btn-danger" value="Delete" /> : null}
     </div>
   </React.Fragment>
 );
