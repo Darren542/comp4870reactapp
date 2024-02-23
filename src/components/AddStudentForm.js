@@ -60,7 +60,7 @@ const AddStudentForm =(param)=>{
       setLastName(param.student.lastName);
       setSchool(param.student.school);
     }
-  }, [param.student?.firstName, param.student?.lastName, param.student?.school])
+  }, [param.student?.firstName, param.student?.lastName, param.student?.school, param.student])
   
 
     return(
