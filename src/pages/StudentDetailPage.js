@@ -33,6 +33,9 @@ const StudentDetailPage = () => {
             <h3>Others:</h3>
               <StudentsList exceptId={studentInfo.studentId} />
           </div>
+          <div style={{ width: "50%", float: "left", paddingBottom: "40px" }}>
+            <AddStudentForm isEdit={true} student={studentInfo} id={id} />
+          </div>
           <div style={{ width: "50%", float: "left" }}>
             <AddStudentForm />
           </div>
